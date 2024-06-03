@@ -1,0 +1,16 @@
+# configuration constants
+BLOCK_SIZE = 32
+
+# colors
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+BROWN = (139, 69, 19)
+BLACK = (0, 0, 0)
+GREY = (128, 128, 128)
+LIGHT_GREEN = (144, 238, 144)
+LIGHT_GREY = (211, 211, 211)
+LIGHT_BROWN = (205, 133, 63)
+LIGHT_BLUE = (173, 216, 230)
+BLUE = (0, 0, 255)
+LIGHT_YELLOW = (255, 255, 204)
+ORANGE = (255, 165, 0)
