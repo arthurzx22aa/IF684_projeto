@@ -11,7 +11,7 @@ class Tile:
 
 class BlankTile(Tile):
     def __init__(self):
-        super().__init__(id=0, cost=0)
+        super().__init__(id=0, cost=1)
 
     def draw(self, surface, x, y):
         pygame.draw.rect(surface, LIGHT_GREEN, (x, y, BLOCK_SIZE, BLOCK_SIZE))
