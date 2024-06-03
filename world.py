@@ -1,54 +1,49 @@
 import random
 import pygame
-from config import BLOCK_SIZE, LIGHT_GREEN, BLACK, LIGHT_YELLOW, ORANGE
-from elements import draw_food, draw_tree, draw_stones, draw_mountain, draw_water
+from typing import List
+from config import BLACK, BLOCK_SIZE, ORANGE, OVERLAY_BG_COLOR, OVERLAY_FONT_COLOR, OVERLAY_FONT_SIZE, WHITE
+from tile import Tile, BLANK_TILE, TREE_TILE, STONE_TILE, MOUNTAIN_TILE, WATER_TILE, FOOD_TILE, TILE_WEIGHTS
 
 def generate_map(size, tile_weights=None):
     if tile_weights is None:
-        tile_weights = {0: 1, 5: 1, 10: 1, -1: 1, 20: 1}  # default to equal weights
+        tile_weights = TILE_WEIGHTS
 
     def place_cluster(map_data, tile, cluster_size, frequency):
-        # place a number of cluster of tiles on the map, according to the frequency
         for _ in range(frequency):
-            # select a random spot on the map
             x, y = random.randint(0, size-1), random.randint(0, size-1)
-            # place the cluster around that spot
             for _ in range(cluster_size):
-                # check for map bounds
                 if 0 <= x < size and 0 <= y < size:
                     map_data[y][x] = tile
                     x += random.choice([-1, 0, 1])
                     y += random.choice([-1, 0, 1])
 
     # initialize map with blank tiles
-    game_map = [[0 for _ in range(size)] for _ in range(size)]
+    game_map: List[List[Tile]] = [[BLANK_TILE for _ in range(size)] for _ in range(size)]
 
     total_weight = sum(tile_weights.values())
 
     # place water clusters
-    water_weight = tile_weights.get(20, 1)
-    place_cluster(game_map, 20, cluster_size=random.randint(3, 7), frequency=int((size**2 * (water_weight / total_weight))/4))
+    water_weight = tile_weights.get(WATER_TILE, 1)
+    place_cluster(game_map, WATER_TILE, cluster_size=random.randint(3, 7), frequency=int((size**2 * (water_weight / total_weight))/4))
 
     # place mountain clusters
-    mountain_weight = tile_weights.get(-1, 1)
-    place_cluster(game_map, -1, cluster_size=random.randint(3, 5), frequency=int((size**2 * (mountain_weight / total_weight))/4))
+    mountain_weight = tile_weights.get(MOUNTAIN_TILE, 1)
+    place_cluster(game_map, MOUNTAIN_TILE, cluster_size=random.randint(3, 5), frequency=int((size**2 * (mountain_weight / total_weight))/4))
 
     # place tree clusters near water
-    tree_weight = tile_weights.get(5, 1)
+    tree_weight = tile_weights.get(TREE_TILE, 1)
     for y in range(size):
         for x in range(size):
-            # find water tiles
-            if game_map[y][x] == 20 and random.random() < 0.5:
-                # place trees around it
-                place_cluster(game_map, 5, cluster_size=random.randint(1, 3), frequency=tree_weight)
+            if game_map[y][x].tile_id == WATER_TILE.tile_id and random.random() < 0.5:
+                place_cluster(game_map, TREE_TILE, cluster_size=random.randint(1, 3), frequency=tree_weight)
 
-    # fill remaining tiles with blanks, and spread stones
-    stone_weight = tile_weights.get(10, 1)
+    # spread stones
+    stone_weight = tile_weights.get(STONE_TILE, 1)
     for y in range(size):
         for x in range(size):
-            if game_map[y][x] == 0:
+            if game_map[y][x].tile_id == BLANK_TILE.tile_id:
                 if random.random() < (0.1 * stone_weight):  # chance to place a stone based on weight
-                    game_map[y][x] = 10
+                    game_map[y][x] = STONE_TILE
 
     return game_map
 
@@ -56,18 +51,7 @@ def draw_map(surface, game_map):
     for row_index, row in enumerate(game_map):
         for col_index, tile in enumerate(row):
             x, y = col_index * BLOCK_SIZE, row_index * BLOCK_SIZE
-            if tile == 5:
-                draw_tree(surface, x, y)
-            elif tile == 10:
-                draw_stones(surface, x, y)
-            elif tile == -1:
-                draw_mountain(surface, x, y)
-            elif tile == 20:
-                draw_water(surface, x, y)
-            elif tile == 99:
-                draw_food(surface, x, y)
-            else:
-                pygame.draw.rect(surface, LIGHT_GREEN, (x, y, BLOCK_SIZE, BLOCK_SIZE))
+            tile.draw(surface, x, y)
 
 def draw_highlight_overlay(surface, player_pos, rows, cols):
     overlay_surface = pygame.Surface((BLOCK_SIZE, BLOCK_SIZE), pygame.SRCALPHA)
@@ -83,3 +67,30 @@ def draw_highlight_overlay(surface, player_pos, rows, cols):
                 y = row_index * BLOCK_SIZE
                 surface.blit(overlay_surface, (x, y))
                 pygame.draw.rect(surface, ORANGE, (x, y, BLOCK_SIZE, BLOCK_SIZE), 3)
+
+
+def draw_overlay(surface, game_map):
+    font = pygame.font.Font(None, OVERLAY_FONT_SIZE)
+    padding = 4  # padding around the text box
+    for row_index, row in enumerate(game_map):
+        for col_index, tile in enumerate(row):
+            number = tile.cost
+            x, y = col_index * BLOCK_SIZE, row_index * BLOCK_SIZE
+            text = font.render(str(number), True, OVERLAY_FONT_COLOR)
+            text_rect = text.get_rect(center=(x + BLOCK_SIZE // 2, y + BLOCK_SIZE // 4))
+
+            # create the background box
+            bg_rect = pygame.Rect(
+                text_rect.left - padding,
+                text_rect.top - padding,
+                text_rect.width + 2 * padding,
+                text_rect.height + 2 * padding
+            )
+
+            # draw background box
+            bg_surface = pygame.Surface(bg_rect.size, pygame.SRCALPHA)
+            bg_surface.fill(OVERLAY_BG_COLOR)
+            surface.blit(bg_surface, bg_rect.topleft)
+
+            # draw the text
+            surface.blit(text, text_rect)

@@ -1,24 +1,16 @@
 import pygame
 import sys
 from config import BLOCK_SIZE, WHITE, BLACK, GREEN
-from elements import draw_overlay, draw_player
-from world import draw_highlight_overlay, draw_map, generate_map
+from elements import draw_player
+from world import draw_highlight_overlay, draw_map, draw_overlay, generate_map
+from tile import TILE_WEIGHTS, FOOD_TILE
 
 # initialize pygame
 pygame.init()
 
-# define tile weights
-tile_weights = {
-    0: 70,   # blank
-    5: 1,   # trees
-    10: 1,  # stones
-    -1: 30,  # mountains
-    20: 30   # water
-}
-
 # generate map
 map_size = 32  # size of the map
-game_map = generate_map(map_size, tile_weights)
+game_map = generate_map(map_size, TILE_WEIGHTS)
 
 # screen dimensions based on game_map
 SCREEN_WIDTH = len(game_map[0]) * BLOCK_SIZE
@@ -59,7 +51,7 @@ while running:
                 col_index = x // BLOCK_SIZE
                 row_index = y // BLOCK_SIZE
                 if 0 <= col_index < len(game_map[0]) and 0 <= row_index < len(game_map):
-                    game_map[row_index][col_index] = 99
+                    game_map[row_index][col_index] = FOOD_TILE
 
     # clear screen
     screen.fill(WHITE)
