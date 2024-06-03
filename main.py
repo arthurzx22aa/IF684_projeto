@@ -79,7 +79,9 @@ while running:
             if current_time >= next_move_time:
                 agent_pos = path[current_step]
                 current_step += 1
-                next_move_time = current_time + move_delay
+                # update next move time
+                # based on the cost of the current tile
+                next_move_time = current_time + (move_delay * game_map[agent_pos[1]][agent_pos[0]].cost)
 
     # draw map and player
     screen.fill(WHITE)
