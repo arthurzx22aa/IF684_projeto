@@ -1,5 +1,5 @@
 import pygame
-from config import BLOCK_SIZE, BROWN, GREEN, GREY, BLACK, LIGHT_GREEN, LIGHT_GREY, LIGHT_BROWN, LIGHT_BLUE, BLUE, LIGHT_YELLOW, ORANGE
+from config import BLOCK_SIZE, BROWN, GREEN, GREY, BLACK, LIGHT_GREEN, LIGHT_GREY, LIGHT_BROWN, LIGHT_BLUE, BLUE, ORANGE
 
 def draw_tree(surface, x, y):
     pygame.draw.rect(surface, LIGHT_GREEN, (x, y, BLOCK_SIZE, BLOCK_SIZE))
@@ -38,32 +38,6 @@ def draw_player(surface, position):
     player_rect = pygame.Rect(position[0], position[1], BLOCK_SIZE, BLOCK_SIZE)
     pygame.draw.rect(surface, GREEN, player_rect)
 
-def draw_map(surface, game_map):
-    for row_index, row in enumerate(game_map):
-        for col_index, tile in enumerate(row):
-            x, y = col_index * BLOCK_SIZE, row_index * BLOCK_SIZE
-            if tile == 5:
-                draw_tree(surface, x, y)
-            elif tile == 10:
-                draw_stones(surface, x, y)
-            elif tile == -1:
-                draw_mountain(surface, x, y)
-            elif tile == 20:
-                draw_water(surface, x, y)
-            else:
-                pygame.draw.rect(surface, LIGHT_GREEN, (x, y, BLOCK_SIZE, BLOCK_SIZE))
-
-def draw_highlight_overlay(surface, player_pos, rows, cols):
-    overlay_surface = pygame.Surface((BLOCK_SIZE, BLOCK_SIZE), pygame.SRCALPHA)
-    overlay_surface.fill((255, 255, 204, 128))  # Light yellow with transparency
-    for dx in [-1, 0, 1]:
-        for dy in [-1, 0, 1]:
-            if dx == 0 and dy == 0:
-                continue
-            col_index = (player_pos[0] // BLOCK_SIZE) + dx
-            row_index = (player_pos[1] // BLOCK_SIZE) + dy
-            if 0 <= col_index < cols and 0 <= row_index < rows:
-                x = col_index * BLOCK_SIZE
-                y = row_index * BLOCK_SIZE
-                surface.blit(overlay_surface, (x, y))
-                pygame.draw.rect(surface, ORANGE, (x, y, BLOCK_SIZE, BLOCK_SIZE), 3)
+def draw_food(surface, x, y):
+    pygame.draw.rect(surface, ORANGE, (x, y, BLOCK_SIZE, BLOCK_SIZE))
+    pygame.draw.circle(surface, BLACK, (x + BLOCK_SIZE // 2, y + BLOCK_SIZE // 2), BLOCK_SIZE // 3)

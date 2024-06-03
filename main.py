@@ -1,8 +1,8 @@
 import pygame
 import sys
 from config import BLOCK_SIZE, WHITE, BLACK, GREEN
-from elements import draw_map, draw_overlay, draw_player, draw_highlight_overlay
-from world import generate_map
+from elements import draw_overlay, draw_player
+from world import draw_highlight_overlay, draw_map, generate_map
 
 # initialize pygame
 pygame.init()
@@ -28,7 +28,7 @@ SCREEN_HEIGHT = len(game_map) * BLOCK_SIZE
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Grid with Movable Block, Trees, Stones, Mountains, and Water")
 
-# Initial position of the green block
+# initial agent position
 agent_pos = [0, 0]
 
 # main loop
@@ -53,6 +53,13 @@ while running:
                 overlay = not overlay
             elif event.key == pygame.K_F2:
                 highlight_overlay = not highlight_overlay
+        elif event.type == pygame.MOUSEBUTTONDOWN: # add food on mouse click
+            if event.button == 1:  # left mouse button
+                x, y = event.pos
+                col_index = x // BLOCK_SIZE
+                row_index = y // BLOCK_SIZE
+                if 0 <= col_index < len(game_map[0]) and 0 <= row_index < len(game_map):
+                    game_map[row_index][col_index] = 99
 
     # clear screen
     screen.fill(WHITE)
