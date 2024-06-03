@@ -9,11 +9,11 @@ pygame.init()
 
 # define tile weights
 tile_weights = {
-    0: 2,   # blank
+    0: 70,   # blank
     5: 1,   # trees
     10: 1,  # stones
-    -1: 1,  # mountains
-    20: 1   # water
+    -1: 30,  # mountains
+    20: 30   # water
 }
 
 # generate map

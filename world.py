@@ -7,8 +7,49 @@ def generate_map(size, tile_weights=None):
     if tile_weights is None:
         tile_weights = {0: 1, 5: 1, 10: 1, -1: 1, 20: 1}  # default to equal weights
 
-    tiles = [tile for tile, weight in tile_weights.items() for _ in range(weight)]
-    game_map = [[random.choice(tiles) for _ in range(size)] for _ in range(size)]
+    def place_cluster(map_data, tile, cluster_size, frequency):
+        # place a number of cluster of tiles on the map, according to the frequency
+        for _ in range(frequency):
+            # select a random spot on the map
+            x, y = random.randint(0, size-1), random.randint(0, size-1)
+            # place the cluster around that spot
+            for _ in range(cluster_size):
+                # check for map bounds
+                if 0 <= x < size and 0 <= y < size:
+                    map_data[y][x] = tile
+                    x += random.choice([-1, 0, 1])
+                    y += random.choice([-1, 0, 1])
+
+    # initialize map with blank tiles
+    game_map = [[0 for _ in range(size)] for _ in range(size)]
+
+    total_weight = sum(tile_weights.values())
+
+    # place water clusters
+    water_weight = tile_weights.get(20, 1)
+    place_cluster(game_map, 20, cluster_size=random.randint(3, 7), frequency=int((size**2 * (water_weight / total_weight))/4))
+
+    # place mountain clusters
+    mountain_weight = tile_weights.get(-1, 1)
+    place_cluster(game_map, -1, cluster_size=random.randint(3, 5), frequency=int((size**2 * (mountain_weight / total_weight))/4))
+
+    # place tree clusters near water
+    tree_weight = tile_weights.get(5, 1)
+    for y in range(size):
+        for x in range(size):
+            # find water tiles
+            if game_map[y][x] == 20 and random.random() < 0.5:
+                # place trees around it
+                place_cluster(game_map, 5, cluster_size=random.randint(1, 3), frequency=tree_weight)
+
+    # fill remaining tiles with blanks, and spread stones
+    stone_weight = tile_weights.get(10, 1)
+    for y in range(size):
+        for x in range(size):
+            if game_map[y][x] == 0:
+                if random.random() < (0.1 * stone_weight):  # chance to place a stone based on weight
+                    game_map[y][x] = 10
+
     return game_map
 
 def draw_map(surface, game_map):
