@@ -98,3 +98,9 @@ def draw_overlay(surface, game_map, max_cost):
             # draw the text
             surface.blit(text, text_rect)
 
+
+def draw_path(screen, surface, path, current_step):
+    for step in range(current_step):
+        position = path[step]
+        screen.blit(surface, (position[0] * BLOCK_SIZE, position[1] * BLOCK_SIZE))
+
