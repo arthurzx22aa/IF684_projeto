@@ -64,7 +64,7 @@ while running:
 
     # draw overlay if toggled
     if overlay:
-        draw_overlay(screen, game_map)
+        draw_overlay(screen, game_map, 20)
         
     # draw highlight overlay if toggled
     if highlight_overlay:

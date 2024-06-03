@@ -54,8 +54,6 @@ class WaterTile(Tile):
 
     def draw(self, surface, x, y):
         pygame.draw.rect(surface, LIGHT_BLUE, (x, y, BLOCK_SIZE, BLOCK_SIZE))
-        pygame.draw.polygon(surface, BLUE, [(x + BLOCK_SIZE // 4, y + BLOCK_SIZE // 2), (x + BLOCK_SIZE // 8, y + BLOCK_SIZE // 4), (x + 3 * BLOCK_SIZE // 8, y + BLOCK_SIZE // 2)])
-        pygame.draw.polygon(surface, BLUE, [(x + 3 * BLOCK_SIZE // 4, y + BLOCK_SIZE // 2), (x + 5 * BLOCK_SIZE // 8, y + BLOCK_SIZE // 4), (x + 7 * BLOCK_SIZE // 8, y + BLOCK_SIZE // 2)])
 
 class FoodTile(Tile):
     def __init__(self):
@@ -64,7 +62,6 @@ class FoodTile(Tile):
     def draw(self, surface, x, y):
         pygame.draw.rect(surface, LIGHT_GREY, (x, y, BLOCK_SIZE, BLOCK_SIZE))
         pygame.draw.circle(surface, BLACK, (x + BLOCK_SIZE // 2, y + BLOCK_SIZE // 2), BLOCK_SIZE // 4)
-        pygame.draw.circle(surface, ORANGE, (x + BLOCK_SIZE // 2, y + BLOCK_SIZE // 2), BLOCK_SIZE // 4, 2)
         pygame.draw.rect(surface, ORANGE, (x, y, BLOCK_SIZE, BLOCK_SIZE), 6)
 
 # tile definitions

@@ -1,8 +1,9 @@
 import random
 import pygame
 from typing import List
-from config import BLACK, BLOCK_SIZE, ORANGE, OVERLAY_BG_COLOR, OVERLAY_FONT_COLOR, OVERLAY_FONT_SIZE, WHITE
-from tile import Tile, BLANK_TILE, TREE_TILE, STONE_TILE, MOUNTAIN_TILE, WATER_TILE, FOOD_TILE, TILE_WEIGHTS
+from config import BLOCK_SIZE, ORANGE, OVERLAY_FONT_SIZE
+from tile import Tile, BLANK_TILE, TREE_TILE, STONE_TILE, MOUNTAIN_TILE, WATER_TILE, TILE_WEIGHTS
+from utils import interpolate_color
 
 def generate_map(size, tile_weights=None):
     if tile_weights is None:
@@ -55,7 +56,7 @@ def draw_map(surface, game_map):
 
 def draw_highlight_overlay(surface, player_pos, rows, cols):
     overlay_surface = pygame.Surface((BLOCK_SIZE, BLOCK_SIZE), pygame.SRCALPHA)
-    overlay_surface.fill((255, 255, 204, 128))  # Light yellow with transparency
+    overlay_surface.fill((255, 255, 204, 128))
     for dx in [-1, 0, 1]:
         for dy in [-1, 0, 1]:
             if dx == 0 and dy == 0:
@@ -69,14 +70,16 @@ def draw_highlight_overlay(surface, player_pos, rows, cols):
                 pygame.draw.rect(surface, ORANGE, (x, y, BLOCK_SIZE, BLOCK_SIZE), 3)
 
 
-def draw_overlay(surface, game_map):
+def draw_overlay(surface, game_map, max_cost):
     font = pygame.font.Font(None, OVERLAY_FONT_SIZE)
     padding = 4  # padding around the text box
+
     for row_index, row in enumerate(game_map):
         for col_index, tile in enumerate(row):
             number = tile.cost
             x, y = col_index * BLOCK_SIZE, row_index * BLOCK_SIZE
-            text = font.render(str(number), True, OVERLAY_FONT_COLOR)
+            text_color, bg_color = interpolate_color(number, max_cost)
+            text = font.render(str(number), True, text_color)
             text_rect = text.get_rect(center=(x + BLOCK_SIZE // 2, y + BLOCK_SIZE // 4))
 
             # create the background box
@@ -89,8 +92,9 @@ def draw_overlay(surface, game_map):
 
             # draw background box
             bg_surface = pygame.Surface(bg_rect.size, pygame.SRCALPHA)
-            bg_surface.fill(OVERLAY_BG_COLOR)
+            bg_surface.fill(bg_color)
             surface.blit(bg_surface, bg_rect.topleft)
 
             # draw the text
             surface.blit(text, text_rect)
+
