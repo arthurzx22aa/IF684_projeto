@@ -2,7 +2,8 @@ import sys
 import pygame
 from config import BLOCK_SIZE, WHITE
 from elements import draw_player
-from node import path_manhattan
+from search.greedy_search import greedy_search
+from uniformCost import uniform_cost_search
 from world import draw_highlight_overlay, draw_map, draw_overlay, draw_path, draw_steps, generate_map
 from tile import MOUNTAIN_TILE, TILE_WEIGHTS, FOOD_TILE
 
@@ -37,15 +38,15 @@ original_tile = None
 
 # create path surface
 path_surface = pygame.Surface((BLOCK_SIZE, BLOCK_SIZE), pygame.SRCALPHA)
-path_surface.fill((0, 0, 0, 128)) # black
+# path_surface.fill((0, 0, 0, 128)) # black
 
 # create visited steps surface
 visited_surface = pygame.Surface((BLOCK_SIZE, BLOCK_SIZE), pygame.SRCALPHA)
-visited_surface.fill((255, 255, 0, 128)) # yellow
+# visited_surface.fill((255, 255, 0, 128)) # yellow
 
 # create marked nodes surface
 marked_surface = pygame.Surface((BLOCK_SIZE, BLOCK_SIZE), pygame.SRCALPHA)
-marked_surface.fill((255, 0, 0, 128))  # red
+# marked_surface.fill((255, 0, 0, 255))  # red
 
 finished_steps = False
 
@@ -74,26 +75,30 @@ while running:
                 x, y = event.pos
                 food_position = (x // BLOCK_SIZE, y // BLOCK_SIZE)
 
+                # reset path variables
+                current_step = 0 
+                path = None
+                current_step = 0
+                finished_steps = False
+
                 # set game map info with new food
                 original_tile = game_map[food_position[1]][food_position[0]]
                 game_map[food_position[1]][food_position[0]] = FOOD_TILE
 
                 # call pathfinding algorithm
-                path, all_steps = a_star(game_map, tuple(agent_pos), food_position)
-                
-                # reset path variables
-                current_step = 0 
+                path, visited_nodes, frontier_nodes = greedy_search(game_map, tuple(agent_pos), food_position)
+
                 next_move_time = current_time + move_delay
 
     # path update logic
     if path is not None:
         # draw visited nodes
-        if not finished_steps and food_position and current_step < len(all_steps):
+        if not finished_steps and food_position and current_step < len(visited_nodes):
             if current_time >= next_move_time:
                 current_step += 1
-                next_move_time = current_time + move_delay
+                next_move_time = current_time + 10
             # all steps finished
-            if current_step == len(all_steps):
+            if current_step == len(visited_nodes):
                 finished_steps = True
                 current_step = 0
         # draw final path
@@ -106,12 +111,7 @@ while running:
                 next_move_time = current_time + (move_delay * game_map[agent_pos[1]][agent_pos[0]].cost)
             # reset path variables
             if current_step == len(path): 
-                print("finished")
                 game_map[food_position[1]][food_position[0]] = original_tile
-                path = None
-                current_step = 0
-                finished_steps = False
-                food_position = None
                 agent_pos = list(agent_pos)
 
     # draw map and player
@@ -120,9 +120,9 @@ while running:
     draw_player(screen, agent_pos)
     if food_position:
         if not finished_steps:
-            draw_steps(screen, visited_surface, marked_surface, all_steps, current_step)
+            draw_steps(screen, visited_surface, marked_surface, visited_nodes, frontier_nodes, current_step)
         else: 
-            draw_steps(screen, visited_surface, marked_surface, all_steps, len(all_steps))
+            draw_steps(screen, visited_surface, marked_surface, visited_nodes, frontier_nodes, len(visited_nodes))
             draw_path(screen, path_surface, path, current_step)
 
     # draw overlay if toggled

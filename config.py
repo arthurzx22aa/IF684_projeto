@@ -14,6 +14,8 @@ LIGHT_BLUE = (123, 150, 240)
 BLUE = (0, 0, 255)
 LIGHT_YELLOW = (255, 255, 204)
 ORANGE = (255, 165, 0)
+RED = (255, 0, 0)
+YELLOW = (255, 255, 0)
 
 # overlay constants
 OVERLAY_FONT_SIZE = 20
