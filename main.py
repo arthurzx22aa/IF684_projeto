@@ -3,7 +3,7 @@ import sys
 import pygame
 from config import BLOCK_SIZE, WHITE
 from elements import draw_player
-from search.greedy_search import priority_search
+from search.priority_search import priority_search
 from world import draw_highlight_overlay, draw_map, draw_overlay, draw_path, draw_steps, generate_map
 from tile import MOUNTAIN_TILE, TILE_WEIGHTS, FOOD_TILE
 
