@@ -4,7 +4,7 @@ import sys
 import pygame
 from config import BLOCK_SIZE, WHITE
 from elements import draw_player
-from search.priority_search import priority_search
+from search.priority_search import PrioritySearch
 from world import draw_highlight_overlay, draw_map, draw_overlay, draw_path, draw_steps, generate_map
 from tile import MOUNTAIN_TILE, TILE_WEIGHTS, FOOD_TILE
 
@@ -100,7 +100,8 @@ while running:
                 game_map[food_position[1]][food_position[0]] = FOOD_TILE
 
                 # call pathfinding algorithm
-                path, visited_nodes, frontier_nodes = priority_search(game_map, tuple(agent_pos), food_position, "greedy")
+                priority_search = PrioritySearch(game_map, "manhattan")
+                path, visited_nodes, frontier_nodes = priority_search.search(tuple(agent_pos), food_position, "greedy")
 
                 next_move_time = current_time + move_delay
 
@@ -130,7 +131,6 @@ while running:
     
     # eat food
     if game_map[agent_pos[1]][agent_pos[0]].tile_id == FOOD_TILE.tile_id:
-        print(original_map[agent_pos[1]][agent_pos[0]])
         game_map[agent_pos[1]][agent_pos[0]] = original_map[agent_pos[1]][agent_pos[0]]
 
     # draw map and player
