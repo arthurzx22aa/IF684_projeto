@@ -51,7 +51,8 @@ visited_surface = pygame.Surface((BLOCK_SIZE, BLOCK_SIZE), pygame.SRCALPHA)
 marked_surface = pygame.Surface((BLOCK_SIZE, BLOCK_SIZE), pygame.SRCALPHA)
 # marked_surface.fill((255, 0, 0, 255))  # red
 
-finished_steps = False
+finished_steps = True
+can_walk = True # flag to allow player movement
 
 while running:
     current_time = pygame.time.get_ticks()
@@ -59,15 +60,24 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.KEYDOWN:
+        elif event.type == pygame.KEYDOWN and can_walk:
+            # reset path variables
+            path = None
+            current_step = 0
+            finished_steps = False
+            # move player
             if event.key == pygame.K_LEFT:
-                agent_pos[0] = max(agent_pos[0] - 1, 0)
+                blocked = game_map[agent_pos[1]][agent_pos[0] - 1].cost == -1
+                agent_pos[0] = max(agent_pos[0] - 1, 0) if not blocked else agent_pos[0]
             elif event.key == pygame.K_RIGHT:
-                agent_pos[0] = min(agent_pos[0] + 1, SCREEN_WIDTH - 1)
+                blocked = game_map[agent_pos[1]][agent_pos[0] + 1].cost == -1
+                agent_pos[0] = min(agent_pos[0] + 1, SCREEN_WIDTH - 1) if not blocked else agent_pos[0]
             elif event.key == pygame.K_UP:
-                agent_pos[1] = max(agent_pos[1] - 1, 0)
+                blocked = game_map[agent_pos[1] - 1][agent_pos[0]].cost == -1
+                agent_pos[1] = max(agent_pos[1] - 1, 0) if not blocked else agent_pos[1]
             elif event.key == pygame.K_DOWN:
-                agent_pos[1] = min(agent_pos[1] + 1, SCREEN_HEIGHT - 1)
+                blocked = game_map[agent_pos[1] + 1][agent_pos[0]].cost == -1
+                agent_pos[1] = min(agent_pos[1] + 1, SCREEN_HEIGHT - 1) if not blocked else agent_pos[1]
             elif event.key == pygame.K_F1:
                 overlay = not overlay
             elif event.key == pygame.K_F2:
@@ -79,10 +89,10 @@ while running:
                 food_position = (x // BLOCK_SIZE, y // BLOCK_SIZE)
 
                 # reset path variables
-                current_step = 0 
                 path = None
                 current_step = 0
                 finished_steps = False
+                can_walk = False
 
                 # set game map info with new food
                 original_tile = game_map[food_position[1]][food_position[0]]
@@ -116,6 +126,7 @@ while running:
             if current_step == len(path): 
                 game_map[food_position[1]][food_position[0]] = original_tile
                 agent_pos = list(agent_pos)
+                can_walk = True
 
     # draw map and player
     screen.fill(WHITE)
