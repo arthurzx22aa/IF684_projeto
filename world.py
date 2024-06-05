@@ -104,3 +104,10 @@ def draw_path(screen, surface, path, current_step):
         position = path[step]
         screen.blit(surface, (position[0] * BLOCK_SIZE, position[1] * BLOCK_SIZE))
 
+def draw_steps(screen, previous_surface, new_surface, all_steps, current_step):
+    for step in range(current_step):
+        position = all_steps[step]
+        screen.blit(previous_surface, (position[0] * BLOCK_SIZE, position[1] * BLOCK_SIZE))
+    for step in range(current_step - 1, current_step):
+        position = all_steps[step]
+        screen.blit(new_surface, (position[0] * BLOCK_SIZE, position[1] * BLOCK_SIZE))
