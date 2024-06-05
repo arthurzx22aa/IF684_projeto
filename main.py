@@ -1,3 +1,4 @@
+import copy
 from random import randint
 import sys
 import pygame
@@ -13,6 +14,7 @@ pygame.init()
 # generate map
 map_size = 32  # size of the map
 game_map = generate_map(map_size, TILE_WEIGHTS)
+original_map = copy.deepcopy(game_map)
 
 # screen dimensions based on game_map
 SCREEN_WIDTH = len(game_map[0]) * BLOCK_SIZE
@@ -95,7 +97,6 @@ while running:
                 can_walk = False
 
                 # set game map info with new food
-                original_tile = game_map[food_position[1]][food_position[0]]
                 game_map[food_position[1]][food_position[0]] = FOOD_TILE
 
                 # call pathfinding algorithm
@@ -124,9 +125,13 @@ while running:
                 next_move_time = current_time + (move_delay * game_map[agent_pos[1]][agent_pos[0]].cost)
             # reset path variables
             if current_step == len(path): 
-                game_map[food_position[1]][food_position[0]] = original_tile
                 agent_pos = list(agent_pos)
                 can_walk = True
+    
+    # eat food
+    if game_map[agent_pos[1]][agent_pos[0]].tile_id == FOOD_TILE.tile_id:
+        print(original_map[agent_pos[1]][agent_pos[0]])
+        game_map[agent_pos[1]][agent_pos[0]] = original_map[agent_pos[1]][agent_pos[0]]
 
     # draw map and player
     screen.fill(WHITE)
