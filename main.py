@@ -26,7 +26,7 @@ pygame.display.set_caption("Vizualizing Algorithms")
 
 # set initial agent position (can't be obstructed)
 while True:
-    agent_pos = [randint(0, SCREEN_WIDTH // BLOCK_SIZE), randint(0, SCREEN_HEIGHT // BLOCK_SIZE)]
+    agent_pos = [randint(0, map_size - 1), randint(0, map_size - 1)]
     if game_map[agent_pos[1]][agent_pos[0]].cost != -1:
         break
 
@@ -100,8 +100,8 @@ while running:
                 game_map[food_position[1]][food_position[0]] = FOOD_TILE
 
                 # call pathfinding algorithm
-                priority_search = PrioritySearch(game_map, "manhattan")
-                path, visited_nodes, frontier_nodes = priority_search.search(tuple(agent_pos), food_position, "greedy")
+                priority_search = PrioritySearch(game_map, "euclidean")
+                path, visited_nodes, frontier_nodes = priority_search.search(tuple(agent_pos), food_position, "uniform")
 
                 next_move_time = current_time + move_delay
 
@@ -111,7 +111,7 @@ while running:
         if not finished_steps and food_position and current_step < len(visited_nodes):
             if current_time >= next_move_time:
                 current_step += 1
-                next_move_time = current_time + 10
+                next_move_time = current_time + 100
             # all steps finished
             if current_step == len(visited_nodes):
                 finished_steps = True

@@ -1,3 +1,4 @@
+import math
 from typing import Literal, Tuple
 
 
@@ -32,4 +33,4 @@ class Search:
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
     
     def euclidean_distance(self, a, b):
-        return ((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2) ** 0.5
+        return math.dist(a, b)

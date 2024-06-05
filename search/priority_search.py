@@ -23,6 +23,8 @@ class PrioritySearch(Search):
         while not frontier.empty():
             _, current = frontier.get()
             visited_nodes.append(current)
+            neighbors = self.get_neighbors(current)
+            frontier_nodes.append(neighbors)
 
             if current == goal:
                 while current:
@@ -30,17 +32,7 @@ class PrioritySearch(Search):
                     current = came_from[current]
                 path.reverse()
 
-                # remove visited nodes from frontier
-                visited_nodes_set = set(visited_nodes)
-                filtered_frontier = [
-                    [item for item in sublist if item not in visited_nodes_set]
-                    for sublist in frontier_nodes
-                ]
-
-                return path, visited_nodes, filtered_frontier
-
-            neighbors = self.get_neighbors(current)
-            frontier_nodes.append(neighbors)
+                return path, visited_nodes, frontier_nodes            
 
             for next in neighbors:
                 if type == "greedy":

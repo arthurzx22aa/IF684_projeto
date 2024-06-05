@@ -111,7 +111,7 @@ def draw_path(screen, surface, path, current_step):
 def draw_steps(screen, surface_visited, surface_target, visited, frontiers, current_step):
     pygame.draw.rect(surface_target, RED + (180,), (0, 0, BLOCK_SIZE, BLOCK_SIZE), 5)
     pygame.draw.rect(surface_visited, YELLOW + (180,), (0, 0, BLOCK_SIZE, BLOCK_SIZE), 5)
-    for step in range(current_step - 1):
+    for step in range(current_step):
         for node in range(len(frontiers[step])):
             x, y = frontiers[step][node]
             screen.blit(surface_target, (x * BLOCK_SIZE, y * BLOCK_SIZE))
