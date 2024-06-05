@@ -5,6 +5,7 @@ from elements import draw_player
 from node import path_manhattan
 from world import draw_highlight_overlay, draw_map, draw_overlay, draw_path, generate_map
 from tile import TILE_WEIGHTS, FOOD_TILE
+import bfs
 
 # initialize pygame
 pygame.init()
@@ -67,7 +68,8 @@ while running:
                 game_map[food_position[1]][food_position[0]] = FOOD_TILE
 
                 # call pathfinding algorithm
-                path = path_manhattan(agent_pos, food_position)
+                path = bfs.bfs_search(game_map, agent_pos, food_position)
+                #path = path_manhattan(agent_pos, food_position)
                 
                 # reset path variables
                 current_step = 0 
