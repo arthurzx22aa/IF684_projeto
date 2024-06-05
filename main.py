@@ -4,6 +4,7 @@ import sys
 import pygame
 from config import BLOCK_SIZE, WHITE
 from elements import draw_player
+from search.breadth_search import Breadth
 from search.depth_search import DFS
 from search.priority_search import PrioritySearch
 from world import draw_highlight_overlay, draw_map, draw_overlay, draw_path, draw_steps, generate_map
@@ -104,8 +105,10 @@ while running:
                 # call pathfinding algorithm
                 priority_search = PrioritySearch(game_map, "euclidean")
                 depth_search = DFS(game_map)
+                breadth_search = Breadth(game_map)
 
-                path, visited_nodes, frontier_nodes = depth_search.search(tuple(agent_pos), food_position)
+                path, visited_nodes, frontier_nodes = breadth_search.search(tuple(agent_pos), food_position)
+                # path, visited_nodes, frontier_nodes = depth_search.search(tuple(agent_pos), food_position)
                 # path, visited_nodes, frontier_nodes = priority_search.search(tuple(agent_pos), food_position, "uniform")
 
                 next_move_time = current_time + move_delay
