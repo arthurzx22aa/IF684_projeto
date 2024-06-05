@@ -4,6 +4,7 @@ import sys
 import pygame
 from config import BLOCK_SIZE, WHITE
 from elements import draw_player
+from search.depth_search import DFS
 from search.priority_search import PrioritySearch
 from world import draw_highlight_overlay, draw_map, draw_overlay, draw_path, draw_steps, generate_map
 from tile import MOUNTAIN_TILE, TILE_WEIGHTS, FOOD_TILE
@@ -62,27 +63,28 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.KEYDOWN and can_walk:
-            # reset path variables
-            path = None
-            current_step = 0
-            finished_steps = False
-            # move player
-            if event.key == pygame.K_LEFT:
-                blocked = game_map[agent_pos[1]][agent_pos[0] - 1].cost == -1
-                agent_pos[0] = max(agent_pos[0] - 1, 0) if not blocked else agent_pos[0]
-            elif event.key == pygame.K_RIGHT:
-                blocked = game_map[agent_pos[1]][agent_pos[0] + 1].cost == -1
-                agent_pos[0] = min(agent_pos[0] + 1, SCREEN_WIDTH - 1) if not blocked else agent_pos[0]
-            elif event.key == pygame.K_UP:
-                blocked = game_map[agent_pos[1] - 1][agent_pos[0]].cost == -1
-                agent_pos[1] = max(agent_pos[1] - 1, 0) if not blocked else agent_pos[1]
-            elif event.key == pygame.K_DOWN:
-                blocked = game_map[agent_pos[1] + 1][agent_pos[0]].cost == -1
-                agent_pos[1] = min(agent_pos[1] + 1, SCREEN_HEIGHT - 1) if not blocked else agent_pos[1]
-            elif event.key == pygame.K_F1:
+        elif event.type == pygame.KEYDOWN:
+            if can_walk:
+                # reset path variables
+                path = None
+                current_step = 0
+                finished_steps = False
+                # move player
+                if event.key == pygame.K_LEFT:
+                    blocked = game_map[agent_pos[1]][agent_pos[0] - 1].cost == -1
+                    agent_pos[0] = max(agent_pos[0] - 1, 0) if not blocked else agent_pos[0]
+                elif event.key == pygame.K_RIGHT:
+                    blocked = game_map[agent_pos[1]][agent_pos[0] + 1].cost == -1
+                    agent_pos[0] = min(agent_pos[0] + 1, SCREEN_WIDTH - 1) if not blocked else agent_pos[0]
+                elif event.key == pygame.K_UP:
+                    blocked = game_map[agent_pos[1] - 1][agent_pos[0]].cost == -1
+                    agent_pos[1] = max(agent_pos[1] - 1, 0) if not blocked else agent_pos[1]
+                elif event.key == pygame.K_DOWN:
+                    blocked = game_map[agent_pos[1] + 1][agent_pos[0]].cost == -1
+                    agent_pos[1] = min(agent_pos[1] + 1, SCREEN_HEIGHT - 1) if not blocked else agent_pos[1]
+            if event.key == pygame.K_F1:
                 overlay = not overlay
-            elif event.key == pygame.K_F2:
+            if event.key == pygame.K_F2:
                 highlight_overlay = not highlight_overlay
         elif event.type == pygame.MOUSEBUTTONDOWN: # add food on mouse click
             if event.button == 1:  # left mouse button
@@ -101,7 +103,10 @@ while running:
 
                 # call pathfinding algorithm
                 priority_search = PrioritySearch(game_map, "euclidean")
-                path, visited_nodes, frontier_nodes = priority_search.search(tuple(agent_pos), food_position, "uniform")
+                depth_search = DFS(game_map)
+
+                path, visited_nodes, frontier_nodes = depth_search.search(tuple(agent_pos), food_position)
+                # path, visited_nodes, frontier_nodes = priority_search.search(tuple(agent_pos), food_position, "uniform")
 
                 next_move_time = current_time + move_delay
 
@@ -111,7 +116,7 @@ while running:
         if not finished_steps and food_position and current_step < len(visited_nodes):
             if current_time >= next_move_time:
                 current_step += 1
-                next_move_time = current_time + 100
+                next_move_time = current_time + 10
             # all steps finished
             if current_step == len(visited_nodes):
                 finished_steps = True
@@ -123,7 +128,7 @@ while running:
                 current_step += 1
                 # update next move time
                 # based on the cost of the current tile
-                next_move_time = current_time + (move_delay * game_map[agent_pos[1]][agent_pos[0]].cost)
+                next_move_time = current_time + (move_delay * game_map[agent_pos[1]][agent_pos[0]].cost / 2)
             # reset path variables
             if current_step == len(path): 
                 agent_pos = list(agent_pos)
