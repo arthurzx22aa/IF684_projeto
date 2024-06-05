@@ -3,11 +3,11 @@
 [] evitar que o usuario possa colocar comida em um obstaculo
 [] evitar que o usuario possa mover o boneco manualmente em direçao a um obstaculo
 [x] aumentar intervalo de tempo quando o agente passa por um terreno custoso
-[] mostrar estados intermediários da busca
+[x] mostrar estados intermediários da busca
 
 pathfinding:
 [] largura
 [] profundidade
-[] custo Uniforme
-[] gulosa
-[] A*
+[x] custo Uniforme
+[x] gulosa
+[x] A*
