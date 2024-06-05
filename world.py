@@ -104,8 +104,8 @@ def draw_path(screen, surface, path, current_step):
         x, y = path[step]
         center_x = x * BLOCK_SIZE + BLOCK_SIZE // 2
         center_y = y * BLOCK_SIZE + BLOCK_SIZE // 2
-        pygame.draw.circle(screen, BLACK, (center_x, center_y), BLOCK_SIZE // 4 + 2)
-        pygame.draw.circle(screen, WHITE, (center_x, center_y), BLOCK_SIZE // 4)
+        pygame.draw.circle(screen, BLACK, (center_x, center_y), BLOCK_SIZE // 6 + 2)
+        pygame.draw.circle(screen, WHITE, (center_x, center_y), BLOCK_SIZE // 6)
         screen.blit(surface, (x * BLOCK_SIZE, y * BLOCK_SIZE))
 
 def draw_steps(screen, surface_visited, surface_target, visited, frontiers, current_step):

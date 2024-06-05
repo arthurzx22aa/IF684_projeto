@@ -1,3 +1,4 @@
+from random import randint
 import sys
 import pygame
 from config import BLOCK_SIZE, WHITE
@@ -21,8 +22,11 @@ SCREEN_HEIGHT = len(game_map) * BLOCK_SIZE
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Vizualizing Algorithms")
 
-# initial agent position
-agent_pos = [0, 0]
+# set initial agent position (can't be obstructed)
+while True:
+    agent_pos = [randint(0, SCREEN_WIDTH // BLOCK_SIZE), randint(0, SCREEN_HEIGHT // BLOCK_SIZE)]
+    if game_map[agent_pos[1]][agent_pos[0]].cost != -1:
+        break
 
 # main loop
 running = True
