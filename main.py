@@ -113,6 +113,17 @@ while running:
                 algorithm_selected = "uniform"
             elif event.key == pygame.K_g:
                 algorithm_selected = "greedy"
+            elif event.key == pygame.K_r:
+                game_map = generate_map(map_size, TILE_WEIGHTS)
+                # reset path variables
+                path = None
+                current_step = 0
+                finished_steps = False
+                # set initial agent position (can't be obstructed)
+                while True:
+                    agent_pos = [randint(0, map_size - 1), randint(0, map_size - 1)]
+                    if game_map[agent_pos[1]][agent_pos[0]].cost != -1:
+                        break
 
             # menu keys (heuristics)
             elif event.key == pygame.K_m and algorithm_selected:

@@ -15,6 +15,7 @@ def draw_menu(screen, font, SCREEN_HEIGHT, SCREEN_WIDTH):
         ("A", "for A*"),
         ("U", "for Uniform"),
         ("G", "for Greedy"),
+        ("R", "to generate a new map"),
     ]
     info1 = "Press F1 to see tile weight information"
     info2 = "Click anywhere to create food"
