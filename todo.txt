@@ -6,8 +6,8 @@
 [x] mostrar estados intermediários da busca
 
 pathfinding:
-[] largura
-[] profundidade
+[x] largura
+[x] profundidade
 [x] custo Uniforme
 [x] gulosa
 [x] A*
