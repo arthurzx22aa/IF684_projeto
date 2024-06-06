@@ -119,6 +119,7 @@ while running:
                 path = None
                 current_step = 0
                 finished_steps = False
+                can_walk = True
                 # set initial agent position (can't be obstructed)
                 while True:
                     agent_pos = [randint(0, map_size - 1), randint(0, map_size - 1)]
@@ -141,10 +142,16 @@ while running:
                 heuristic_selected = None
 
             
-        elif event.type == pygame.MOUSEBUTTONDOWN and algorithm_selected: # add food on mouse click
+        elif event.type == pygame.MOUSEBUTTONDOWN and algorithm_selected and heuristic_selected: 
+            # add food on mouse click
             if event.button == 1:  # left mouse button
                 # get the position of the mouse click
                 x, y = event.pos
+
+                # check if the tile is not obstructed
+                if game_map[y // BLOCK_SIZE][x // BLOCK_SIZE].cost == -1:
+                    continue
+
                 food_position = (x // BLOCK_SIZE, y // BLOCK_SIZE)
 
                 # reset path variables
@@ -174,6 +181,16 @@ while running:
                         path, visited_nodes, frontier_nodes = priority_search.search(tuple(agent_pos), food_position, "uniform")
 
                 next_move_time = current_time + move_delay
+            if event.button == 3 and can_walk: # right mouse button
+                # teleport agent
+                x, y = event.pos
+
+                # check if the tile is not obstructed
+                if game_map[y // BLOCK_SIZE][x // BLOCK_SIZE].cost == -1:
+                    continue
+
+                # place agent
+                agent_pos = [x // BLOCK_SIZE, y // BLOCK_SIZE]
 
     if algorithm_selected is None and heuristic_selected is None:
         draw_menu(screen, menu_font, SCREEN_HEIGHT, SCREEN_WIDTH)

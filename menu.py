@@ -19,6 +19,7 @@ def draw_menu(screen, font, SCREEN_HEIGHT, SCREEN_WIDTH):
     ]
     info1 = "Press F1 to see tile weight information"
     info2 = "Click anywhere to create food"
+    info3 = "Right click anywhere to teleport agent"
     
     screen.blit(wm1f, (SCREEN_WIDTH // 2 - wm1f.get_width() // 2, SCREEN_HEIGHT // 2 - 200))
     screen.blit(wm2f, (SCREEN_WIDTH // 2 - wm2f.get_width() // 2, SCREEN_HEIGHT // 2 - 150))
@@ -30,8 +31,10 @@ def draw_menu(screen, font, SCREEN_HEIGHT, SCREEN_WIDTH):
     
     info1_f = font.render(info1, True, BLACK)
     info2_f = font.render(info2, True, BLACK)
-    screen.blit(info1_f, (SCREEN_WIDTH // 2 - info1_f.get_width() // 2, SCREEN_HEIGHT - 100))
-    screen.blit(info2_f, (SCREEN_WIDTH // 2 - info2_f.get_width() // 2, SCREEN_HEIGHT - 50))
+    info3_f = font.render(info3, True, BLACK)
+    screen.blit(info1_f, (SCREEN_WIDTH // 2 - info1_f.get_width() // 2, SCREEN_HEIGHT - 150))
+    screen.blit(info2_f, (SCREEN_WIDTH // 2 - info2_f.get_width() // 2, SCREEN_HEIGHT - 100))
+    screen.blit(info3_f, (SCREEN_WIDTH // 2 - info3_f.get_width() // 2, SCREEN_HEIGHT - 50))
 
 def draw_heuristic_menu(screen, font, SCREEN_HEIGHT, SCREEN_WIDTH):
     screen.fill(WHITE)
