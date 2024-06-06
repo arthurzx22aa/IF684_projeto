@@ -1,7 +1,7 @@
 import random
 import pygame
 from typing import List
-from config import BLOCK_SIZE, ORANGE, OVERLAY_FONT_SIZE
+from config import BLACK, BLOCK_SIZE, GREEN, LIGHT_YELLOW, ORANGE, OVERLAY_FONT_SIZE, RED, WHITE, YELLOW
 from tile import Tile, BLANK_TILE, TREE_TILE, STONE_TILE, MOUNTAIN_TILE, WATER_TILE, TILE_WEIGHTS
 from utils import interpolate_color
 
@@ -101,13 +101,20 @@ def draw_overlay(surface, game_map, max_cost):
 
 def draw_path(screen, surface, path, current_step):
     for step in range(current_step):
-        position = path[step]
-        screen.blit(surface, (position[0] * BLOCK_SIZE, position[1] * BLOCK_SIZE))
+        x, y = path[step]
+        center_x = x * BLOCK_SIZE + BLOCK_SIZE // 2
+        center_y = y * BLOCK_SIZE + BLOCK_SIZE // 2
+        pygame.draw.circle(screen, BLACK, (center_x, center_y), BLOCK_SIZE // 6 + 2)
+        pygame.draw.circle(screen, WHITE, (center_x, center_y), BLOCK_SIZE // 6)
+        screen.blit(surface, (x * BLOCK_SIZE, y * BLOCK_SIZE))
 
-def draw_steps(screen, previous_surface, new_surface, all_steps, current_step):
+def draw_steps(screen, surface_visited, surface_target, visited, frontiers, current_step):
+    pygame.draw.rect(surface_target, RED + (180,), (0, 0, BLOCK_SIZE, BLOCK_SIZE), 5)
+    pygame.draw.rect(surface_visited, YELLOW + (180,), (0, 0, BLOCK_SIZE, BLOCK_SIZE), 5)
     for step in range(current_step):
-        position = all_steps[step]
-        screen.blit(previous_surface, (position[0] * BLOCK_SIZE, position[1] * BLOCK_SIZE))
-    for step in range(current_step - 1, current_step):
-        position = all_steps[step]
-        screen.blit(new_surface, (position[0] * BLOCK_SIZE, position[1] * BLOCK_SIZE))
+        for node in range(len(frontiers[step])):
+            x, y = frontiers[step][node]
+            screen.blit(surface_target, (x * BLOCK_SIZE, y * BLOCK_SIZE))
+    for step in range(current_step):
+        position = visited[step]
+        screen.blit(surface_visited, (position[0] * BLOCK_SIZE, position[1] * BLOCK_SIZE))

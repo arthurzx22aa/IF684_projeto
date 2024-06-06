@@ -1,13 +1,13 @@
-[] personagem deve aparecer aleatoriamente em um local que nao seja impassavel
-[] comida deve sumir ao comer
+[x] personagem deve aparecer aleatoriamente em um local que nao seja impassavel
+[x] comida deve sumir ao comer
 [] evitar que o usuario possa colocar comida em um obstaculo
-[] evitar que o usuario possa mover o boneco manualmente em direçao a um obstaculo
+[x] evitar que o usuario possa mover o boneco manualmente em direçao a um obstaculo
 [x] aumentar intervalo de tempo quando o agente passa por um terreno custoso
-[] mostrar estados intermediários da busca
+[x] mostrar estados intermediários da busca
 
 pathfinding:
-[] largura
-[] profundidade
-[] custo Uniforme
-[] gulosa
-[] A*
+[x] largura
+[x] profundidade
+[x] custo Uniforme
+[x] gulosa
+[x] A*
